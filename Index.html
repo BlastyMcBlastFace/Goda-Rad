@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <title>Goda råd i vardagen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Länka till manifestet -->
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <!-- Färg runt adressfält/system UI -->
+  <meta name="theme-color" content="#020617">
+
+  <!-- iOS PWA-meta -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Goda råd">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-card: #111827;
+      --accent: #22c55e;
+      --accent-soft: #4ade80;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%, #000 100%);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .wrapper {
+      max-width: 700px;
+      width: 100%;
+    }
+
+    .card {
+      background: linear-gradient(135deg, #020617 0, #020617 40%, #111827 100%);
+      border-radius: 24px;
+      padding: 28px 24px 24px;
+      box-shadow:
+        0 25px 50px -20px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(148, 163, 184, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(34, 197, 94, 0.12), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(56, 189, 248, 0.15), transparent 50%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .title-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      background: radial-gradient(circle at 30% 0%, rgba(34, 197, 94, 0.5), transparent 55%);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.5);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.4rem, 2vw + 1rem, 1.8rem);
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      margin: 0 0 20px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 520px;
+    }
+
+    .advice-box {
+      margin: 18px 0 20px;
+      padding: 20px 18px;
+      border-radius: 18px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .advice-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--accent-soft);
+      margin-bottom: 4px;
+    }
+
+    .advice-text {
+      margin: 0;
+      font-size: 1.15rem;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .advice-prefix {
+      opacity: 0.8;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      color: var(--text-muted);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.07s ease, box-shadow 0.07s ease, background 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: radial-gradient(circle at 0 0, #4ade80, #22c55e);
+      color: #022c22;
+      font-weight: 600;
+      box-shadow:
+        0 10px 18px -12px rgba(34, 197, 94, 0.9),
+        0 0 0 1px rgba(22, 163, 74, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-muted);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    button span.icon {
+      font-size: 1.2rem;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 14px 24px -16px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(148, 163, 184, 0.6);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow:
+        0 8px 12px -10px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(148, 163, 184, 0.5);
+    }
+
+    .helper-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      max-width: 260px;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 20px 16px 16px;
+      }
+      .advice-box {
+        padding: 16px 14px;
+      }
+      .advice-text {
+        font-size: 1.05rem;
+      }
+      .controls {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .helper-text {
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <div class="card-inner">
+        <div class="title-row">
+          <div class="title-badge">✦</div>
+          <h1>Goda råd i vardagen</h1>
+        </div>
+        <p class="subtitle">
+          Tryck på knappen när du behöver ett litet stöd i vardagen.
+          Råden handlar om samarbete, mod, positivt mindset och att ta hand om varandra.
+        </p>
+
+        <div class="advice-box">
+          <div class="advice-label">Dagens råd</div>
+          <div class="advice-prefix" id="advice-prefix">Tryck på knappen för att få ett råd.</div>
+          <p class="advice-text" id="advice-text">—</p>
+        </div>
+
+        <div class="controls">
+          <div class="button-row">
+            <button class="btn-primary" id="new-advice-btn">
+              <span class="icon">🎲</span>
+              <span>Ge mig ett nytt råd</span>
+            </button>
+            <button class="btn-secondary" id="copy-advice-btn">
+              <span class="icon">📋</span>
+              <span>Kopiera rådet</span>
+            </button>
+          </div>
+          <p class="helper-text">
+            Tips: Börja gärna möten med att någon trycker på knappen och läser upp rådet högt.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const adviceList = [
+      "Stötta och hjälp dina kollegor.",
+      "Ha en personlig kontakt.",
+      "Sök kontakt när du behöver.",
+      "Ansträng dig själv!",
+      "Ha en positiv mindset!",
+      "Be om hjälp när du behöver den, dina kollegor finns där för dig!",
+      "Engagera dig!",
+      "Var positiv, du klarar det!",
+      "Var lyhörd, allt sägs inte alltid!",
+      "Var prestigelös, tillsammans får vi bästa lösningen!",
+      "Var inkluderande, alla ska med – det blir bättre då!",
+      "Glöm inte att bjuda in de nya cheferna i verksamheten."
+    ];
+
+    const adviceTextEl = document.getElementById("advice-text");
+    const advicePrefixEl = document.getElementById("advice-prefix");
+    const newAdviceBtn = document.getElementById("new-advice-btn");
+    const copyAdviceBtn = document.getElementById("copy-advice-btn");
+
+    let lastIndex = -1;
+
+    function getRandomAdvice() {
+      if (adviceList.length === 0) return "";
+      let index;
+      do {
+        index = Math.floor(Math.random() * adviceList.length);
+      } while (adviceList.length > 1 && index === lastIndex);
+      lastIndex = index;
+      return adviceList[index];
+    }
+
+    function showNewAdvice() {
+      const advice = getRandomAdvice();
+      adviceTextEl.textContent = advice;
+      advicePrefixEl.textContent = "Kom ihåg:";
+    }
+
+    async function copyAdvice() {
+      const text = adviceTextEl.textContent.trim();
+      if (!text || text === "—") return;
+
+      try {
+        await navigator.clipboard.writeText(text);
+        const oldText = copyAdviceBtn.innerHTML;
+        copyAdviceBtn.innerHTML = '<span class="icon">✅</span><span>Kopierat!</span>';
+        setTimeout(() => {
+          copyAdviceBtn.innerHTML = oldText;
+        }, 1500);
+      } catch (err) {
+        alert("Kunde inte kopiera texten automatiskt, men du kan markera och kopiera den manuellt.");
+      }
+    }
+
+    newAdviceBtn.addEventListener("click", showNewAdvice);
+    copyAdviceBtn.addEventListener("click", copyAdvice);
+
+    // Visa ett första råd direkt
+    showNewAdvice();
+
+    // Registrera service worker för PWA/offline
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js")
+          .catch(err => {
+            console.log("Service worker registration failed:", err);
+          });
+      });
+    }
+  </script>
+</body>
+</html>
